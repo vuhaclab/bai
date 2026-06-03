@@ -1,0 +1,17 @@
+{
+  "name": "dracula-ops-dashboard",
+  "version": "1.0.0",
+  "description": "Dark Dracula-style Node.js dashboard for multitool, API, proxy, and email management.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "dashboard",
+    "nodejs",
+    "dracula"
+  ],
+  "author": "",
+  "license": "MIT"
+}

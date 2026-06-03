@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dracula Ops Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Dashboard menu">
+        <div class="brand">
+          <div class="brand-mark">D</div>
+          <div>
+            <strong>Dracula Ops</strong>
+            <span>Control Center</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item is-active" data-section="overview">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Overview</span>
+          </button>
+          <button class="nav-item" data-section="multitool">
+            <i data-lucide="wrench"></i>
+            <span>Multitool</span>
+          </button>
+          <button class="nav-item" data-section="api">
+            <i data-lucide="plug"></i>
+            <span>API Manager</span>
+          </button>
+          <button class="nav-item" data-section="proxy">
+            <i data-lucide="route"></i>
+            <span>Proxy Manager</span>
+          </button>
+          <button class="nav-item" data-section="email">
+            <i data-lucide="mail"></i>
+            <span>Email Manager</span>
+          </button>
+          <button class="nav-item" data-section="roadmap">
+            <i data-lucide="layers"></i>
+            <span>Updates</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="pulse"></div>
+          <span>Node server online</span>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <button class="icon-button sidebar-toggle" id="sidebarToggle" aria-label="Open menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="page-title">
+            <span>Workspace</span>
+            <h1>Operations Dashboard</h1>
+          </div>
+          <div class="top-actions">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input id="globalSearch" type="search" placeholder="Search module, proxy, API..." autocomplete="off">
+            </div>
+            <button class="icon-button" id="refreshButton" aria-label="Refresh data">
+              <i data-lucide="refresh-cw"></i>
+            </button>
+          </div>
+        </header>
+
+        <section class="content-view is-visible" id="overview">
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span>Tools</span>
+              <strong id="statTools">0</strong>
+              <small id="statRunningTools">0 running</small>
+            </article>
+            <article class="metric-card">
+              <span>APIs</span>
+              <strong id="statApis">0</strong>
+              <small id="statOnlineApis">0 online</small>
+            </article>
+            <article class="metric-card">
+              <span>Proxies</span>
+              <strong id="statProxies">0</strong>
+              <small id="statActiveProxies">0 active</small>
+            </article>
+            <article class="metric-card">
+              <span>Email Queue</span>
+              <strong id="statEmailQueue">0</strong>
+              <small id="statEmailProfiles">0 profile</small>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <span>Live Activity</span>
+                  <h2>Recent activity</h2>
+                </div>
+                <button class="ghost-button" data-section-jump="multitool">
+                  <i data-lucide="arrow-right"></i>
+                  Tools
+                </button>
+              </div>
+              <div class="activity-list" id="activityList"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <span>System Load</span>
+                  <h2>Service load</h2>
+                </div>
+              </div>
+              <div class="load-bars">
+                <div class="load-item">
+                  <div><span>API Gateway</span><strong>74%</strong></div>
+                  <progress max="100" value="74"></progress>
+                </div>
+                <div class="load-item">
+                  <div><span>Proxy Pools</span><strong>58%</strong></div>
+                  <progress max="100" value="58"></progress>
+                </div>
+                <div class="load-item">
+                  <div><span>Email Workers</span><strong>39%</strong></div>
+                  <progress max="100" value="39"></progress>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="content-view" id="multitool">
+          <div class="section-heading">
+            <div>
+              <span>Toolkit</span>
+              <h2>Multitool</h2>
+            </div>
+            <button class="primary-button" id="runAllTools" type="button">
+              <i data-lucide="play"></i>
+              Run checks
+            </button>
+          </div>
+          <div class="tool-grid" id="toolGrid"></div>
+        </section>
+
+        <section class="content-view" id="api">
+          <div class="section-heading">
+            <div>
+              <span>Connections</span>
+              <h2>API Manager</h2>
+            </div>
+          </div>
+          <div class="manager-layout">
+            <form class="panel form-panel" id="apiForm">
+              <label>
+                API name
+                <input name="name" required placeholder="Billing Gateway">
+              </label>
+              <label>
+                Base URL
+                <input name="baseUrl" required placeholder="https://api.domain.com/v1">
+              </label>
+              <label>
+                Environment
+                <select name="environment">
+                  <option>Production</option>
+                  <option>Staging</option>
+                  <option>Development</option>
+                </select>
+              </label>
+              <label>
+                Owner
+                <input name="owner" placeholder="Team name">
+              </label>
+              <button class="primary-button" type="submit">
+                <i data-lucide="plus"></i>
+                Add API
+              </button>
+            </form>
+            <div class="panel table-panel">
+              <div class="panel-header">
+                <div>
+                  <span>Registry</span>
+                  <h2>API list</h2>
+                </div>
+              </div>
+              <div class="data-list" id="apiList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-view" id="proxy">
+          <div class="section-heading">
+            <div>
+              <span>Routing</span>
+              <h2>Proxy Manager</h2>
+            </div>
+            <div class="section-actions">
+              <button class="ghost-button" id="checkAllProxies" type="button">
+                <i data-lucide="activity"></i>
+                Check all
+              </button>
+              <button class="primary-button" id="exportProxies" type="button">
+                <i data-lucide="download"></i>
+                Export
+              </button>
+            </div>
+          </div>
+
+          <div class="proxy-stat-grid">
+            <article class="mini-stat">
+              <span>Total</span>
+              <strong id="proxyStatTotal">0</strong>
+            </article>
+            <article class="mini-stat">
+              <span>Live</span>
+              <strong id="proxyStatLive">0</strong>
+            </article>
+            <article class="mini-stat">
+              <span>Dead</span>
+              <strong id="proxyStatDead">0</strong>
+            </article>
+            <article class="mini-stat">
+              <span>Expiring</span>
+              <strong id="proxyStatExpiring">0</strong>
+            </article>
+          </div>
+
+          <div class="proxy-tabs" role="tablist" aria-label="Proxy manager">
+            <button class="tab-button is-active" data-proxy-tab="proxyAdd" type="button">
+              <i data-lucide="plus"></i>
+              Add Proxy
+            </button>
+            <button class="tab-button" data-proxy-tab="proxyCheck" type="button">
+              <i data-lucide="radar"></i>
+              Check Proxy
+            </button>
+            <button class="tab-button" data-proxy-tab="proxyInventory" type="button">
+              <i data-lucide="list-checks"></i>
+              Proxy List
+            </button>
+          </div>
+
+          <div class="proxy-tab-panel is-visible" id="proxyAdd">
+            <div class="proxy-workspace">
+              <form class="panel form-panel" id="proxyForm">
+                <div class="panel-header compact">
+                  <div>
+                    <span>Single</span>
+                    <h2>Add proxy</h2>
+                  </div>
+                </div>
+                <label>
+                  Name
+                  <input name="label" placeholder="US Pool 02">
+                </label>
+                <label>
+                  Host / IP
+                  <input name="host" required placeholder="127.0.0.1">
+                </label>
+                <div class="inline-fields">
+                  <label>
+                    Port
+                    <input name="port" type="number" required min="1" max="65535" placeholder="8080">
+                  </label>
+                  <label>
+                    Protocol
+                    <select name="protocol">
+                      <option>HTTP</option>
+                      <option>HTTPS</option>
+                      <option>SOCKS4</option>
+                      <option>SOCKS5</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="inline-fields">
+                  <label>
+                    IP version
+                    <select name="ipVersion">
+                      <option>IPv4</option>
+                      <option>IPv6</option>
+                    </select>
+                  </label>
+                  <label>
+                    Exp time
+                    <input name="expiresAt" type="datetime-local">
+                  </label>
+                </div>
+                <div class="inline-fields">
+                  <label>
+                    Username
+                    <input name="username" placeholder="optional">
+                  </label>
+                  <label>
+                    Password
+                    <input name="password" type="password" placeholder="optional">
+                  </label>
+                </div>
+                <label>
+                  Note
+                  <textarea name="note" rows="3" placeholder="tag, vendor, country..."></textarea>
+                </label>
+                <button class="primary-button" type="submit">
+                  <i data-lucide="plus"></i>
+                  Add proxy
+                </button>
+              </form>
+
+              <form class="panel form-panel" id="proxyBulkForm">
+                <div class="panel-header compact">
+                  <div>
+                    <span>Bulk</span>
+                    <h2>Add list / file txt</h2>
+                  </div>
+                </div>
+                <label>
+                  Proxy list
+                  <textarea id="proxyTextInput" name="list" required rows="10" placeholder="http://1.2.3.4:8080&#10;1.2.3.4:1080:user:pass&#10;socks5://user:pass@127.0.0.1:1080&#10;socks5://[2001:db8::1]:1080"></textarea>
+                </label>
+                <label>
+                  File txt
+                  <input id="proxyFileInput" type="file" accept=".txt,text/plain">
+                </label>
+                <div class="inline-fields">
+                  <label>
+                    Default protocol
+                    <select name="protocol">
+                      <option>HTTP</option>
+                      <option>HTTPS</option>
+                      <option>SOCKS4</option>
+                      <option>SOCKS5</option>
+                    </select>
+                  </label>
+                  <label>
+                    Default IP
+                    <select name="ipVersion">
+                      <option>IPv4</option>
+                      <option>IPv6</option>
+                    </select>
+                  </label>
+                </div>
+                <label>
+                  Exp time
+                  <input name="expiresAt" type="datetime-local">
+                </label>
+                <label>
+                  Note
+                  <textarea name="note" rows="2" placeholder="batch note"></textarea>
+                </label>
+                <button class="primary-button" type="submit">
+                  <i data-lucide="upload"></i>
+                  Import list
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="proxy-tab-panel" id="proxyCheck">
+            <div class="proxy-workspace">
+              <form class="panel form-panel" id="proxyQuickCheckForm">
+                <div class="panel-header compact">
+                  <div>
+                    <span>Checker</span>
+                    <h2>Check proxy</h2>
+                  </div>
+                </div>
+                <label>
+                  Proxy
+                  <input name="proxyLine" required placeholder="socks5://127.0.0.1:1080">
+                </label>
+                <label class="checkbox-line">
+                  <input name="saveAfterCheck" type="checkbox" value="yes">
+                  Add to list after check
+                </label>
+                <button class="primary-button" type="submit">
+                  <i data-lucide="radar"></i>
+                  Check
+                </button>
+              </form>
+
+              <div class="panel">
+                <div class="panel-header compact">
+                  <div>
+                    <span>Result</span>
+                    <h2>Check detail</h2>
+                  </div>
+                </div>
+                <div class="check-result" id="proxyCheckResult">
+                  <div class="empty-state">No check result.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="proxy-tab-panel" id="proxyInventory">
+            <div class="proxy-inventory-layout">
+              <div class="panel table-panel proxy-list-panel">
+                <div class="panel-header">
+                  <div>
+                    <span>Inventory</span>
+                    <h2>Proxy list</h2>
+                  </div>
+                  <div class="list-filters">
+                    <select id="proxyStatusFilter" aria-label="Status filter">
+                      <option value="">All status</option>
+                      <option value="active">Active</option>
+                      <option value="paused">Paused</option>
+                      <option value="failed">Failed</option>
+                      <option value="expired">Expired</option>
+                      <option value="live">Live</option>
+                      <option value="dead">Dead</option>
+                    </select>
+                    <select id="proxyProtocolFilter" aria-label="Protocol filter">
+                      <option value="">All protocol</option>
+                      <option>HTTP</option>
+                      <option>HTTPS</option>
+                      <option>SOCKS4</option>
+                      <option>SOCKS5</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="data-list proxy-list" id="proxyList"></div>
+              </div>
+
+              <form class="panel form-panel edit-panel" id="proxyEditForm" hidden>
+                <div class="panel-header compact">
+                  <div>
+                    <span>Edit</span>
+                    <h2>Edit proxy</h2>
+                  </div>
+                  <button class="icon-button" id="closeProxyEdit" type="button" aria-label="Close edit">
+                    <i data-lucide="x"></i>
+                  </button>
+                </div>
+                <input name="id" type="hidden">
+                <label>
+                  Name
+                  <input name="label">
+                </label>
+                <label>
+                  Host / IP
+                  <input name="host" required>
+                </label>
+                <div class="inline-fields">
+                  <label>
+                    Port
+                    <input name="port" type="number" required min="1" max="65535">
+                  </label>
+                  <label>
+                    Protocol
+                    <select name="protocol">
+                      <option>HTTP</option>
+                      <option>HTTPS</option>
+                      <option>SOCKS4</option>
+                      <option>SOCKS5</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="inline-fields">
+                  <label>
+                    IP version
+                    <select name="ipVersion">
+                      <option>IPv4</option>
+                      <option>IPv6</option>
+                    </select>
+                  </label>
+                  <label>
+                    Status
+                    <select name="status">
+                      <option>active</option>
+                      <option>paused</option>
+                      <option>failed</option>
+                      <option>expired</option>
+                    </select>
+                  </label>
+                </div>
+                <label>
+                  Exp time
+                  <input name="expiresAt" type="datetime-local">
+                </label>
+                <div class="inline-fields">
+                  <label>
+                    Username
+                    <input name="username">
+                  </label>
+                  <label>
+                    Password
+                    <input name="password" type="password">
+                  </label>
+                </div>
+                <label>
+                  Note
+                  <textarea name="note" rows="3"></textarea>
+                </label>
+                <button class="primary-button" type="submit">
+                  <i data-lucide="save"></i>
+                  Save
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-view" id="email">
+          <div class="section-heading">
+            <div>
+              <span>Messaging</span>
+              <h2>Email Manager</h2>
+            </div>
+          </div>
+          <div class="manager-layout">
+            <form class="panel form-panel" id="emailForm">
+              <label>
+                Profile name
+                <input name="name" required placeholder="Support SMTP">
+              </label>
+              <label>
+                Provider
+                <input name="provider" required placeholder="Postmark, SES, SendGrid...">
+              </label>
+              <button class="primary-button" type="submit">
+                <i data-lucide="plus"></i>
+                Add profile
+              </button>
+            </form>
+            <div class="panel table-panel">
+              <div class="panel-header">
+                <div>
+                  <span>Profiles</span>
+                  <h2>Email profiles</h2>
+                </div>
+              </div>
+              <div class="data-list" id="emailList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-view" id="roadmap">
+          <div class="section-heading">
+            <div>
+              <span>Backlog</span>
+              <h2>Modules to update later</h2>
+            </div>
+          </div>
+          <div class="roadmap-grid">
+            <article class="panel roadmap-item">
+              <i data-lucide="shield-check"></i>
+              <h3>Security Center</h3>
+              <p>Key manager, audit log, access alerts, and operator roles.</p>
+            </article>
+            <article class="panel roadmap-item">
+              <i data-lucide="database"></i>
+              <h3>Data Vault</h3>
+              <p>Encrypted config storage, scheduled backup, and environment sync.</p>
+            </article>
+            <article class="panel roadmap-item">
+              <i data-lucide="bell-ring"></i>
+              <h3>Alert Rules</h3>
+              <p>Create notification rules for email, webhook, or internal channels.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
